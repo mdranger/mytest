@@ -1,3 +1,5 @@
 #Test example
-all: main.cpp
-	gcc -o mytest.x main.cpp
+SRC=/home/skywelld/mytest
+DES=/home/skywelld/mytest
+all:${SRC}/main.cpp
+	gcc -o ${DES}/mytest.x ${SRC}/main.cpp
