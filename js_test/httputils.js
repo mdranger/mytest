@@ -3,6 +3,8 @@
 the Jingtum-rest API.
 It contains asynchronout HTTP GET requests for different
 REST-API Routes.
+The GET/POST functions were written by following the examples
+https://nodejs.org/api/http.html
 
 1. ACCOUNTS
 1.1 Generate Wallet 
@@ -33,7 +35,12 @@ REST-API Routes.
 
 4. TRUSTLINES
 4.1 Get Trustlines
+    GET /v1/accounts/{:address}/trustlines
 4.2 Grant Trustline
+    POST /v1/accounts/{:address}/trustlines?validated=true
+
+5. Create Client Resource ID
+Generate a universally-unique identifier suitable for use as the Client Resource ID for a payment.
 ---------------------------------------------------*/
 //http_request = require("https");
 http_request = require("http");
@@ -567,7 +574,7 @@ cmd:
  
 */
 exports.grant_trustlines = function(options,
-  des_acct, in_currency, in_counterparty,
+  des_acct, in_post_data,
   callback){
 
 
@@ -589,7 +596,7 @@ exports.grant_trustlines = function(options,
   // A function to handle the response when it starts to arrive
   var  request = http_request.request(cmd);
 
-  request.write(data);
+  request.write(in_post_data);
   request.end();
 
   // Save the response body as it arrives
@@ -601,3 +608,7 @@ exports.grant_trustlines = function(options,
 
 };
 
+/*
+5. Create Client Resource ID
+Generate a universally-unique identifier suitable for use as the Client Resource ID for a payment.
+*/
