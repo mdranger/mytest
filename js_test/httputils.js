@@ -49,6 +49,7 @@ http_request = require("http");
 1.1 Generate new wallet
 /v1/wallet/new
 status
+
 */
 exports.gen_wallet = function(options, callback){
     var cmd = {
@@ -190,7 +191,7 @@ Descriptions:
 
 Input:
   options    - REST API server site and port number
-  in_payment - A payment object, can be created through
+  in_post_data - A payment object, can be created through
                check_payment_path call.
 
 Output:
@@ -199,7 +200,7 @@ Output:
   payments - Array
 */
 exports.submit_payment = function(options,
-  dest_acct, in_payment, callback){
+  dest_acct, in_post_data, callback){
 
 
   var cmd = {
@@ -212,7 +213,7 @@ exports.submit_payment = function(options,
   //Build up the commond to send out
   cmd.hostname = options.hostname; //: 'tapi.jingtum.com',
   cmd.port = options.port; // 443,
-  cmd.path = '/v1/accounts/' + des_acct + '/payments/'
+  cmd.path = '/v1/accounts/' + dest_acct + '/payments/'
     + 'payments?validated=true';
   cmd.method = 'POST';
 
@@ -230,7 +231,20 @@ exports.submit_payment = function(options,
       if (callback) callback(response.statusCode, resultJson);
     });
   });
+  
+  //Error handling
+  request.on('error', function(e) {
+    console.log('submit_payment error: ' + e.message);
+  });
+    
+  //write data to request body
+  request.write(in_post_data);
+  //Note that in the example req.end() was called. 
+  //With http.request() one must always call req.end() 
+  //to signify that you're done with the request 
+  //- even if there is no data being written to the request body.
   request.end();
+
 };
 
 /*
@@ -286,7 +300,7 @@ exports.confirm_payment = function(options,
 };
 
 /*
-Get Payment History
+2.4 Get Payment History
 Input:
   options    - REST API server site and port number
   in_acct    - The account address whose orders to look up
@@ -333,9 +347,103 @@ exports.get_payment_history = function(options,
   request.end();
 };
 
+/*
+3.1 Place Order
+    POST /v1/accounts/{:address}/orders?validated=true
+Input:
+    address - The account address creating the order.
+*/
+
+exports.place_order = function(options,
+  dest_acct, in_post_data, callback){
+
+
+  var cmd = {
+    hostname : '',
+    port : 0,
+    path : '',
+    method : ''
+  };
+
+  //Build up the commond to send out
+  cmd.hostname = options.hostname; 
+  cmd.port = options.port; 
+  cmd.path = '/v1/accounts/' + dest_acct + 'orders?validated=true';
+  cmd.method = 'POST';
+
+  // A function to handle the response when it starts to arrive
+  var  request = http_request.request(cmd, function(response) {
+    // Save the response body as it arrives
+    var body = ""
+    response.on("data", function(chunk) { body += chunk; });
+
+    // When response is complete, call the callback
+    response.on("end", function() {
+    //Break the return message into a JSON message
+      var resultJson = JSON.parse(body);
+      //console.log("Receive: ", body);
+      if (callback) callback(response.statusCode, resultJson);
+    });
+  });
+  
+  //Error handling
+  request.on('error', function(e) {
+    console.log('place_order error: ' + e.message);
+  });
+    
+  //write data to request body
+  request.write(in_post_data);
+  //Note that in the example req.end() was called. 
+  //With http.request() one must always call req.end() 
+  //to signify that you're done with the request 
+  //- even if there is no data being written to the request body.
+  request.end();
+
+};
 
 /*
-Get Account Orders
+3.2 Cancel Order
+    DELETE /v1/accounts/{:address}/orders/{:order}?validated=true
+  in_acct - Account that submit the order
+  in_order_seq - The sequesnce number of the order to cancel.
+*/
+exports.cancel_order = function(options,
+  in_acct, in_order_seq, callback){
+
+
+  var cmd = {
+    hostname : '',
+    port : 0,
+    path : '',
+    method : ''
+  };
+  cmd.hostname = options.hostname; //: 'tapi.jingtum.com',
+  cmd.port = options.port; // 443,
+  cmd.path = '/v1/accounts/' + in_acct + '/orders/'
+    + in_order_seq + '?validated=true';
+  cmd.method = 'DELETE';
+
+
+  // A function to handle the response when it starts to arrive
+  var  request = http_request.request(cmd, function(response) {
+    // Save the response body as it arrives
+    var body = ""
+    response.on("data", function(chunk) { body += chunk; });
+
+    // When response is complete, call the callback
+    response.on("end", function() {
+    //Break the return message into a JSON message
+      var resultJson = JSON.parse(body);
+      //console.log("Receive: ", body);
+      if (callback) callback(response.statusCode, resultJson);
+    });
+  });
+  request.end();
+};
+
+
+/*
+3.3 Get Account Orders
 
 Retrieves all open currency-exchange orders associated with the
 Jingtum address.
@@ -370,7 +478,7 @@ exports.get_account_orders = function(options,
 
 
   // A function to handle the response when it starts to arrive
-  var  request = require("https").request(cmd, function(response) {
+  var  request = http_request.request(cmd, function(response) {
     // Save the response body as it arrives
     var body = ""
     response.on("data", function(chunk) { body += chunk; });
@@ -388,7 +496,7 @@ exports.get_account_orders = function(options,
 
 
 /*
-Get Order Transaction
+3.4 Get Order Transaction
 
 Get the details of an order transaction. An order transaction 
 either places an order or cancels an order.
@@ -569,14 +677,12 @@ exports.get_trustlines = function(options,
 /*
 4.2 Grant Trustline
 Creates or modifies a trustline.
-/v1/accounts/{:address}/trustlines?validated=true
+POST /v1/accounts/{:address}/trustlines?validated=true
 cmd:
  
 */
 exports.grant_trustlines = function(options,
-  des_acct, in_post_data,
-  callback){
-
+  des_acct, in_post_data, callback){
 
   var cmd = {
     hostname : '',
@@ -594,21 +700,77 @@ exports.grant_trustlines = function(options,
   cmd.method = 'POST';
 
   // A function to handle the response when it starts to arrive
-  var  request = http_request.request(cmd);
-
-  request.write(in_post_data);
-  request.end();
-
-  // Save the response body as it arrives
-  request.on("response", function(response) {
-  //Create the command object
+  var  request = http_request.request(cmd, function(response) {
+    // Save the response body as it arrives
     var body = ""
     response.on("data", function(chunk) { body += chunk; });
+
+    // When response is complete, call the callback
+    response.on("end", function() {
+    //Break the return message into a JSON message
+      var resultJson = JSON.parse(body);
+      //console.log("Receive: ", body);
+      if (callback) callback(response.statusCode, resultJson);
+    });
   });
+  
+  //
+  request.on('error', function(e) {
+    console.log('grant_trustlines error: ' + e.message);
+  });
+    
+  //write data to request body
+  request.write(in_post_data);
+  //Note that in the example req.end() was called. 
+  //With http.request() one must always call req.end() 
+  //to signify that you're done with the request 
+  //- even if there is no data being written to the request body.
+  request.end();
+
 
 };
 
 /*
 5. Create Client Resource ID
-Generate a universally-unique identifier suitable for use as the Client Resource ID for a payment.
+Generate a universally-unique identifier suitable for use 
+as the Client Resource ID for a payment.
+GET /v1/uuid
+Input:
+    none
+Output:
+    object
+{
+  "success": true,
+  "uuid": "a5a8fe40-3795-4b10-b2b6-f05f3ca31db9"
+}
 */
+exports.get_client_resource_id = function(options, callback){
+    var cmd = {
+    hostname : '',
+    port : 0,
+    path : '',
+    method : ''
+  };
+
+  cmd.hostname = options.hostname; //: 'tapi.jingtum.com',
+  cmd.port = options.port; // 443,
+  cmd.path = '/v1/uuid';
+  cmd.method = 'GET';
+
+  // Make a simple GET request
+  // A function to handle the response when it starts to arrive
+  var  request = http_request.request(cmd, function(response) {
+    // Save the response body as it arrives
+    var body = "";
+    response.on("data", function(chunk) { body += chunk; });
+
+    // When response is complete, call the callback
+    response.on("end", function() {
+    //Break the return message into a JSON message
+      var resultJson = JSON.parse(body);
+      if (callback) callback(response.statusCode, resultJson);
+    });
+  });
+  request.end();
+
+};
