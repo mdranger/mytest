@@ -42,8 +42,8 @@ https://nodejs.org/api/http.html
 5. Create Client Resource ID
 Generate a universally-unique identifier suitable for use as the Client Resource ID for a payment.
 ---------------------------------------------------*/
-//http_request = require("https");
-http_request = require("http");
+http_request = require("https");
+//http_request = require("http");
 
 /*
 1.1 Generate new wallet
@@ -216,7 +216,11 @@ exports.submit_payment = function(options,
   cmd.path = '/v1/accounts/' + dest_acct + '/payments/'
     + 'payments?validated=true';
   cmd.method = 'POST';
+  cmd.headers = {
+    'Content-Type': 'application/json;charset=utf-8'
+  };
 
+  console.log("cmd "+JSON.stringify(cmd)+"\n");
   // A function to handle the response when it starts to arrive
   var  request = http_request.request(cmd, function(response) {
     // Save the response body as it arrives
@@ -226,8 +230,8 @@ exports.submit_payment = function(options,
     // When response is complete, call the callback
     response.on("end", function() {
     //Break the return message into a JSON message
+      console.log("Receive: ", body);
       var resultJson = JSON.parse(body);
-      //console.log("Receive: ", body);
       if (callback) callback(response.statusCode, resultJson);
     });
   });
@@ -238,7 +242,8 @@ exports.submit_payment = function(options,
   });
     
   //write data to request body
-  request.write(in_post_data);
+  console.log('Post:'+JSON.stringify(in_post_data));
+  request.write(JSON.stringify(in_post_data));
   //Note that in the example req.end() was called. 
   //With http.request() one must always call req.end() 
   //to signify that you're done with the request 

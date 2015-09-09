@@ -3,14 +3,14 @@
    
 */
 //The REST server for testing
-exports.rest_server = {
+exports.rest_server_https = {
   hostname: 'tapi.jingtum.com',
   port: 443,
   path: '',
   method: '',
 };
 
-exports.rest_server2 = {
+exports.rest_server_http= {
   hostname: '101.200.176.249',
   port: 80,
   path: '',

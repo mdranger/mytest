@@ -7,7 +7,7 @@
 
 */
 var accounts = require('./config.js').accounts;
-var inServer = require('./config').rest_server_http;
+var inServer = require('./config.js').rest_server_https;
 var get_balance = require('./httputils.js').get_balance;
 var submit_payment = require('./httputils.js').submit_payment;
 var wallets = require('./wallet-address.json'); 
@@ -32,14 +32,27 @@ function run(in_file, in_base, in_currency) {
 
   console.log("Read in "+total_count+" accounts!");
   console.log("Pay from "+in_base.account+":"+in_base.secret);
+   console.log(" Server" + inServer.hostname);
   //Create the payment object using necessary info
-  var cur_payment;//=require('./httputils.js').payment;
   var send_amount = {
   "value": 10.0,
-  currency: "SWT",
-  issuer : "",
+  "currency": "SWT",
+  "issuer" : "",
   };//=require('./httputils.js').amount;
-  var in_data; 
+  //Payment object
+  var cur_payment = {
+    source_account: "",
+    source_amount: "",
+    source_slippage: "",
+    destination_account: "",
+    destination_amount: "",
+    paths: [],
+  };//=require('./httputils.js').payment;
+  var in_data = {
+    secret:"",
+    client_resource_id:109,
+    //payment: cur_payment,
+  }; 
  
   //Create a fixed amount of SWT to send
   //for (var i=0; i< total_count;i++ ){
@@ -61,7 +74,7 @@ function run(in_file, in_base, in_currency) {
     in_data.payment = cur_payment;
      
     //Submit the payment for SWT
-    submit_payment(inServer, wallets[i].secret, 
+    submit_payment(inServer, wallets[i].address, 
       in_data,
       function(Rstatus, resultJson){
         //Check to see if the return is success
