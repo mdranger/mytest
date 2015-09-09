@@ -20,6 +20,12 @@ exports.rest_server2 = {
 //Test accounts
 exports.accounts = {
   // Users
+  //Base
+  "base"  : {
+    'account' : "jHb9CJAWyB4jr91VRWn96DkukG4bwdtyTh",
+    'secret':"snoPBjXtMeMyMHUVTgbuqAfg1SUTb",
+  },
+
   "alice" : {
     'account' : "jG1QQv2nh2gj7RCZ1P8YYcBUKCCN633rCn",
     'secret' : "alice",
