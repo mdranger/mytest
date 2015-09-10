@@ -26,6 +26,10 @@ exports.accounts = {
     'secret':"snoPBjXtMeMyMHUVTgbuqAfg1SUTb",
   },
 
+  "gateway" : {
+    'account' : "jBciDE8Q3uJjf111VeiUNM775AMKHEbBLS",
+    'secret': "missing",
+  },
   "alice" : {
     'account' : "jG1QQv2nh2gj7RCZ1P8YYcBUKCCN633rCn",
     'secret' : "alice",

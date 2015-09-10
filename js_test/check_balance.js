@@ -2,7 +2,7 @@
 //
 //var assert = require("assert");
 //var Remote = require('skywell-lib').Remote;
-var inServer = require('./config').rest_server2;
+var inServer = require('./config').rest_server_https;
 var get_balance = require('./httputils.js').get_balance;
 var wallets = require('./wallet-address.json'); 
 
@@ -40,7 +40,7 @@ function run(in_file) {
             console.log("Account:" + 
               wallets[j].address +
               JSON.stringify(resultJson.balances[i].value));
-           fs.appendFile('wallet.txt',
+           fs.appendFile(in_file,
             wallets[j].address + ':' +
             JSON.stringify(resultJson.balances[i].value)+"\n");
             //'\n'+JSON.stringify(wallets[acct].account) +
@@ -56,4 +56,6 @@ function run(in_file) {
     );//end get_balance
   }//end acct loop
 }//end function 
+
+//Check the input balances and saved 
 run('wallet2.txt');

@@ -1,7 +1,8 @@
 /*To test the Payment process in JS format
 1. Read in the test wallet addresses
 2. Save the current balance in a separate file.
-3. Make the payment from the base acount.
+3. Make the payment from the trusted acount
+   Yonghu Tong.
 4. Check the new balance and see if the 
    result is good.   
 
@@ -35,7 +36,7 @@ function run(in_file, in_base, in_currency) {
    console.log(" Server" + inServer.hostname);
   //Create the payment object using necessary info
   var send_amount = {
-  "value": "10.0",
+  "value": 10.0,
   "currency": "SWT",
   "issuer" : "",
   };//=require('./httputils.js').amount;
@@ -57,38 +58,24 @@ function run(in_file, in_base, in_currency) {
   //Create a fixed amount of SWT to send
   //for (var i=0; i< total_count;i++ ){
   for (var i=0; i< 1;i++ ){
-    //Generate an unique ID to use for the
-    //resource ID 
-    try {
-    var buf =  require('crypto').randomBytes(16);
-   
-    //console.log('Have %d bytes of random data: %s', buf.length, buf.toString('hex'));
-    //buf.toString('hex');
-    //console.log("Conver to string ", buf.toString('hex'));
-  } catch (ex) {
-  // handle error
-  // most likely, entropy sources are drained
-    console.log("Error of gen the ID at loop %d!", i);
-  }
-
-    //console.log(i+" is "+wallets[i].address);
+    console.log(i+" is "+wallets[i].address);
     //create_payment_obj();
     //From base account to destination account
-    cur_payment.source_account = in_base.account;
+    cur_payment.source_account = in_base.address;
     cur_payment.source_amount = send_amount;
      //Note the source amount need to be higher than send amount
-    cur_payment.source_amount.value = "1000";//send_amount.value + 0.1;
+    cur_payment.source_amount.value = send_amount.value + 0.1;
     cur_payment.source_slippage = 0;
     cur_payment.destination_account = wallets[i].address;
     cur_payment.destination_amount = send_amount; 
     cur_payment.paths = [];
 
     in_data.secret = in_base.secret;
-    in_data.client_resource_id = buf.toString('hex');
+    in_data.client_resource_id = "109";
     in_data.payment = cur_payment;
      
     //Submit the payment for SWT
-    submit_payment(inServer, cur_payment.source_account, 
+    submit_payment(inServer, wallets[i].address, 
       in_data,
       function(Rstatus, resultJson){
         //Check to see if the return is success

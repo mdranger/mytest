@@ -1,9 +1,11 @@
-//to test the read in JS format
-//
-//var assert = require("assert");
-//var Remote = require('skywell-lib').Remote;
-var inServer = require('./config').rest_server2;
-var get_balance = require('./httputils.js').get_balance;
+/*
+To test the check trustline function
+Read in the accounts from external JSON file and
+get the trustline from the REST-API for each address,
+and saved in a new file.
+*/
+var inServer = require('./config').rest_server_https;
+var get_trustlines = require('./httputils.js').get_trustlines;
 var wallets = require('./wallet-address.json'); 
 
 function run(in_file) {
@@ -27,7 +29,7 @@ function run(in_file) {
     //Check the SWT balance, only keep the
     //console.log('Check '+wallets[acct].account);
 
-    get_balance(inServer, wallets[acct].address,
+    get_trustlines(inServer, wallets[acct].address,
       function(Rstatus, resultJson) {
      console.log(resultJson.success);
      //console.log(resultJson);
@@ -53,7 +55,7 @@ function run(in_file) {
           //done();
       }//end callback
 
-    );//end get_balance
+    );//end get_trustlines
   }//end acct loop
 }//end function 
 run('wallet2.txt');

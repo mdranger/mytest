@@ -26,11 +26,21 @@ var cur_payment = {
   var amount = 100;
   var currency = 'CNY';
 
+  try {
+  var buf =  require('crypto').randomBytes(16);
+  console.log('Have %d bytes of random data: %s', buf.length, buf.toString('hex'));
+    //buf.toString('hex');
+    console.log("Conver to string ", buf.toString('hex'));
+  } catch (ex) {
+  // handle error
+  // most likely, entropy sources are drained
+    console.log("Error of gen the ID!");
+  }
   var command = '/v1/accounts/'+src_wallet+'/payments/paths/'  
       + des_wallet + '/' + amount + '+' + currency + '+' 
       + gateway;
-   cur_payment.source_account = src_wallet;
-   cur_payment.destination_amount = input2.a1;//lice;
+  cur_payment.source_account = src_wallet;
+  cur_payment.destination_amount = input2.a1;//lice;
   //Create the remote 
   console.log('accts ', src_wallet);
   console.log('accts ', cur_payment.source_account);

@@ -106,6 +106,9 @@ exports.get_balance = function(options, in_acct, callback){
   cmd.path = '/v1/accounts/' + in_acct + '/balances';
   cmd.method = 'GET';
 
+  //Save the commands to an external file for usage
+  console.log('https://'+cmd.hostname+':'+cmd.port+cmd.path);
+
   // Make a simple GET request
   // A function to handle the response when it starts to arrive
   //request.on(cmd, function(response) {
@@ -200,7 +203,7 @@ Output:
   payments - Array
 */
 exports.submit_payment = function(options,
-  dest_acct, in_post_data, callback){
+  source_acct, in_post_data, callback){
 
 
   var cmd = {
@@ -213,14 +216,16 @@ exports.submit_payment = function(options,
   //Build up the commond to send out
   cmd.hostname = options.hostname; //: 'tapi.jingtum.com',
   cmd.port = options.port; // 443,
-  cmd.path = '/v1/accounts/' + dest_acct + '/payments/'
-    + 'payments?validated=true';
+  cmd.path = '/v1/accounts/' + source_acct 
+    + '/payments?validated=true';
   cmd.method = 'POST';
   cmd.headers = {
-    'Content-Type': 'application/json;charset=utf-8'
+    'Content-Type': 'application/json'
   };
 
-  console.log("cmd "+JSON.stringify(cmd)+"\n");
+  //This is used to build up the extral
+  //console.log("https://"+cmd.hostname+":"+cmd.port+
+  //  cmd.path + " POST ");
   // A function to handle the response when it starts to arrive
   var  request = http_request.request(cmd, function(response) {
     // Save the response body as it arrives
@@ -242,7 +247,7 @@ exports.submit_payment = function(options,
   });
     
   //write data to request body
-  console.log('Post:'+JSON.stringify(in_post_data));
+  console.log('Post:%s', JSON.stringify(in_post_data));
   request.write(JSON.stringify(in_post_data));
   //Note that in the example req.end() was called. 
   //With http.request() one must always call req.end() 
