@@ -17,6 +17,7 @@ npm i
 npm start
 ```
 
+之后可以使用 url 访问浏览器：http://localhost:p8091
 
 ## Docker模式
 
