@@ -1,2 +1,0 @@
-{"success":true,"wallet":{"address":"jLv56dPA7jZPF8cErzZfcX6k1Q5KUaXSS5","secret":"snd6fAsd11Efj6NVzh97n8oN1mLBX"}}
-{"success":true,"wallet":{"address":"j4uctZDrZyzFAeijWojkecKqQ1mwFNz8aD","secret":"shfRpXTwpdwzWNNsz3mKmbRyQint6"}}
