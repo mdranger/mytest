@@ -17,7 +17,7 @@ npm i
 npm start
 ```
 
-之后可以使用 url 访问浏览器：http://localhost:p8091
+之后可以使用 url 访问浏览器：http://localhost:8091
 
 ## Docker模式
 
@@ -35,9 +35,15 @@ Successfully tagged docker-manager:1.0
 
 Docker 容器可以启动如下： 
 ```bash
-docker run -p8090:8091 docker-manager:1.0
+docker run -p8090:8091 -v /var/run/docker.sock:/var/run/docker.sock docker-manager:1.0
 ```
-成功启动容器后，可以使用 url 访问浏览器：http://localhost:p8090
+注意这里必须加上 -v 的路径用于连接 DOCKER 和运行的容器，否则无法正常访问 Docker 接口，会报错误
+
+```bash
+Docker/Node error: Error: connect ENOENT /var/run/docker.sock
+```
+
+成功启动容器后，可以使用 url 访问浏览器：http://localhost:8090
 
 
 

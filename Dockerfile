@@ -4,5 +4,5 @@ ADD . /src
 RUN apk update && apk add bash && \
     cd /src; npm install 
     
-EXPOSE  8090
+EXPOSE  8091
 CMD node /src/bin/www
