@@ -10,7 +10,7 @@
     "body-parser": "~1.18.2",
     "dockerode": "^2.5.4",
     "ejs": "^2.5.7",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "express-status-monitor": "^1.2.8",
     "serve-favicon": "^2.4.5",
     "bufferutil": "^4.0.1",
